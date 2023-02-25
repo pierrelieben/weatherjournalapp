@@ -1,14 +1,11 @@
 /* Global Variables */
-
 // Create a new date instance dynamically with JS
 let d = new Date();
-// let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
-let newDate = d.toDateString();
+let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
 
 // base API URL and API key with metric units attached
 const baseURL = "https://api.openweathermap.org/data/2.5/weather?zip=";
 const appid = "&appid=fdad557729cbd4b234bbaa147f8341f0&units=metric";
-const hostname = "127.0.0.1";
 
 // add a listener to the generate button which sets the entire process in motion
 document.getElementById('generate').addEventListener('click', generateData);
@@ -18,26 +15,21 @@ function generateData(e) {
     const zip = document.getElementById('zip').value;
     const feeling = document.getElementById('feelings').value;
     getAPI(baseURL, zip, appid).then((data) => {
-        console.log("The temp in " + (data.name) + " is " + (data.main.temp) + " deg Celsius" + (feeling));
-
+        console.log(data);
         // pull data from api
         if (data) {
-            const {
-              main: { temp },
-              name: city
-            } = data;
-
-            //add the feeling data to api data before posting to server
-            const info = {
-                newDate,
-                city,
-                temp: Math.round(temp),
-                feeling
-              };
-            
-            postData('/add', info);
+            const newData = {
+                date: newDate,
+                city: data.name,
+                temp: data.main.temp,
+                feeling: feeling
+            };
+            console.log(newData);
+            postData('/add', newData);
+        } else {
+            console.log('API call failed to generate data');
         }
-    }).then(function() {updateUI()});
+        }).then(function() {updateUI()});
 };
 
 // send a request to the weather API 
@@ -46,7 +38,6 @@ const getAPI = async (baseURL, zip, appid) => {
     console.log(baseURL, zip, appid);
     try {
         const APIdata = await response.json();
-        console.log('Data collected and stored as json!');
         return APIdata;
     } catch {
         console.log("error", error);
@@ -65,11 +56,9 @@ const postData = async ( url = '', data = {})=>{
      // Body data type must match "Content-Type" header        
       body: JSON.stringify(data), 
     });
-
       try {
-        const newData = await response.json();
-        console.log(newData);
-        return newData;
+        const dataNew = await response.json();
+        return dataNew;
       }catch(error) {
       console.log("error", error);
       }

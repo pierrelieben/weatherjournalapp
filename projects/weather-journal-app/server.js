@@ -31,15 +31,12 @@ function listening() {
 
 // Callback function to complete POST '/add'
 const postData = (req, res) => {
-    projectData.date = req.body.newDate;
+    console.log(req.body);
+    projectData.date = req.body.date;
     projectData.city = req.body.city;
     projectData.temp = req.body.temp;
     projectData.feeling = req.body.feeling;
     res.send(projectData);
-    // console.log(newEntry);
-    // projectData.push(newEntry);
-    // console.log(projectData);
-    // res.status(200).send(projectData);
   }
 // POST Route
 app.post("/add", postData);
